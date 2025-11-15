@@ -1,0 +1,157 @@
+<script lang="ts">
+  import { Button } from '$lib/components/ui/button';
+  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+
+  let message = '';
+  let response = '';
+  let loading = false;
+  let error = '';
+
+  async function handleGetEcho() {
+    loading = true;
+    error = '';
+    response = '';
+
+    try {
+      const res = await fetch('/api/echo');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      response = JSON.stringify(data, null, 2);
+    } catch (err: any) {
+      error = err.message || 'Failed to fetch';
+    } finally {
+      loading = false;
+    }
+  }
+
+  async function handlePostEcho() {
+    if (!message.trim()) {
+      error = 'Please enter a message';
+      return;
+    }
+
+    loading = true;
+    error = '';
+    response = '';
+
+    try {
+      const res = await fetch('/api/echo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      response = JSON.stringify(data, null, 2);
+    } catch (err: any) {
+      error = err.message || 'Failed to send message';
+    } finally {
+      loading = false;
+    }
+  }
+</script>
+
+<svelte:head>
+  <title>{{PROJECT_NAME}}</title>
+</svelte:head>
+
+<div class="container mx-auto p-8 max-w-4xl">
+  <div class="mb-8 text-center">
+    <h1 class="text-4xl font-bold mb-2">{{PROJECT_NAME}}</h1>
+    <p class="text-muted-foreground">
+      A full-stack monorepo deployed to Cloudflare
+    </p>
+  </div>
+
+  <div class="grid gap-6 md:grid-cols-2">
+    <!-- GET Echo Test -->
+    <Card>
+      <CardHeader>
+        <CardTitle>GET /api/echo</CardTitle>
+        <CardDescription>Test a simple GET request to the API</CardDescription>
+      </CardHeader>
+      <CardContent class="space-y-4">
+        <Button on:click={handleGetEcho} disabled={loading} class="w-full">
+          {loading ? 'Loading...' : 'Send GET Request'}
+        </Button>
+      </CardContent>
+    </Card>
+
+    <!-- POST Echo Test -->
+    <Card>
+      <CardHeader>
+        <CardTitle>POST /api/echo</CardTitle>
+        <CardDescription>Send a message to the API and get it echoed back</CardDescription>
+      </CardHeader>
+      <CardContent class="space-y-4">
+        <div class="space-y-2">
+          <Label for="message">Message</Label>
+          <Input
+            id="message"
+            bind:value={message}
+            placeholder="Enter a message..."
+            disabled={loading}
+          />
+        </div>
+        <Button on:click={handlePostEcho} disabled={loading} class="w-full">
+          {loading ? 'Sending...' : 'Send POST Request'}
+        </Button>
+      </CardContent>
+    </Card>
+  </div>
+
+  <!-- Response Display -->
+  {#if error}
+    <Card class="mt-6 border-destructive">
+      <CardHeader>
+        <CardTitle class="text-destructive">Error</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p class="text-destructive">{error}</p>
+      </CardContent>
+    </Card>
+  {/if}
+
+  {#if response}
+    <Card class="mt-6">
+      <CardHeader>
+        <CardTitle>Response</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <pre class="bg-muted p-4 rounded-md overflow-x-auto"><code>{response}</code></pre>
+      </CardContent>
+    </Card>
+  {/if}
+
+  <!-- Tech Stack Info -->
+  <Card class="mt-6">
+    <CardHeader>
+      <CardTitle>Tech Stack</CardTitle>
+      <CardDescription>This application is built with</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div>
+          <h3 class="font-semibold mb-2">Frontend</h3>
+          <ul class="text-sm text-muted-foreground space-y-1">
+            <li>• SvelteKit</li>
+            <li>• TailwindCSS</li>
+            <li>• Shadcn-svelte</li>
+            <li>• Cloudflare Pages</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Backend</h3>
+          <ul class="text-sm text-muted-foreground space-y-1">
+            <li>• Hono</li>
+            <li>• @hono/zod-openapi</li>
+            <li>• Cloudflare Workers</li>
+            <li>• D1 & KV bindings</li>
+          </ul>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+</div>

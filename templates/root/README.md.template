@@ -1,0 +1,190 @@
+# {{PROJECT_NAME}}
+
+A full-stack monorepo for Cloudflare-deployed applications, featuring SvelteKit for the frontend and Hono for the API.
+
+## Project Structure
+
+```
+{{PROJECT_NAME}}/
+├── web/         # SvelteKit app (Cloudflare Pages)
+├── api/         # Hono API (Cloudflare Workers)
+├── scripts/     # Build and deployment scripts
+├── tests/       # End-to-end tests (Playwright)
+└── package.json # Root workspace configuration
+```
+
+## Prerequisites
+
+- Node.js 18 or later
+- {{PACKAGE_MANAGER}} (package manager)
+- Wrangler CLI (for Cloudflare deployments)
+- Git
+
+## Getting Started
+
+### 1. Install Dependencies
+
+```bash
+{{PACKAGE_MANAGER}} install
+```
+
+### 2. Configure Cloudflare Bindings
+
+Before running the API locally, you need to set up D1 and KV bindings:
+
+#### Create D1 Database
+
+```bash
+cd api
+npx wrangler d1 create {{PROJECT_NAME}}-db
+```
+
+Copy the database ID from the output and update `api/wrangler.toml`:
+
+```toml
+[[d1_databases]]
+binding = "D1"
+database_name = "{{PROJECT_NAME}}-db"
+database_id = "YOUR_DATABASE_ID_HERE"
+```
+
+#### Create KV Namespace
+
+```bash
+cd api
+npx wrangler kv:namespace create {{PROJECT_NAME}}-kv
+```
+
+Copy the namespace ID and update `api/wrangler.toml`:
+
+```toml
+[[kv_namespaces]]
+binding = "KV"
+id = "YOUR_KV_NAMESPACE_ID_HERE"
+```
+
+### 3. Start Development Servers
+
+```bash
+{{PACKAGE_MANAGER}} run dev
+```
+
+This starts both the web app (http://localhost:5173) and API (http://localhost:8787) concurrently.
+
+## Available Commands
+
+### Development
+
+- `{{PACKAGE_MANAGER}} run dev` - Start development servers for web and API
+- `{{PACKAGE_MANAGER}} run build` - Build all workspaces
+- `{{PACKAGE_MANAGER}} run preview` - Preview production build locally
+
+### Testing
+
+- `{{PACKAGE_MANAGER}} test` - Run end-to-end tests
+- `{{PACKAGE_MANAGER}} run test:unit` - Run API unit tests
+
+### Code Quality
+
+- `{{PACKAGE_MANAGER}} run lint` - Lint all code
+- `{{PACKAGE_MANAGER}} run format` - Format all code with Prettier
+
+### API Documentation
+
+- `{{PACKAGE_MANAGER}} run apidocs` - Generate OpenAPI specification
+
+### Deployment
+
+- `{{PACKAGE_MANAGER}} run deploy:web` - Deploy web app to Cloudflare Pages
+- `{{PACKAGE_MANAGER}} run deploy:api` - Deploy API to Cloudflare Workers
+
+## Workspace Documentation
+
+- [Web App Documentation](./web/README.md) - SvelteKit frontend with Shadcn UI
+- [API Documentation](./api/README.md) - Hono API with OpenAPI documentation
+- [Testing Documentation](./tests/README.md) - E2E testing with Playwright
+- [Scripts Documentation](./scripts/README.md) - Deployment and utility scripts
+
+## Tech Stack
+
+### Frontend (web/)
+- **SvelteKit** - Full-stack framework
+- **TailwindCSS** - Utility-first CSS
+- **Shadcn-svelte** - UI component library
+- **@sveltejs/adapter-cloudflare** - Cloudflare Pages adapter
+
+### Backend (api/)
+- **Hono** - Fast web framework for Cloudflare Workers
+- **@hono/zod-openapi** - OpenAPI schema generation
+- **Zod** - TypeScript-first schema validation
+- **D1** - Cloudflare's SQL database
+- **KV** - Cloudflare's key-value store
+
+### Testing (tests/)
+- **Playwright** - End-to-end testing framework
+
+### Development Tools
+- **TypeScript** - Type safety across the stack
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Husky** - Git hooks
+- **lint-staged** - Pre-commit linting
+
+## Development Workflow
+
+1. **Local Development**: The Vite dev server proxies `/api/*` requests to the Hono API running on port 8787
+2. **Type Safety**: TypeScript is configured across all workspaces for full type safety
+3. **Hot Reload**: Both frontend and backend support hot module replacement
+4. **Testing**: Run E2E tests that exercise the full stack
+
+## Production Deployment
+
+### Web App (Cloudflare Pages)
+
+The easiest way to deploy is via Git integration:
+
+1. Push your repository to GitHub/GitLab
+2. Connect to Cloudflare Pages
+3. Set build command: `npm run build --workspace web`
+4. Set build output directory: `web/.svelte-kit/cloudflare`
+
+Or deploy manually:
+
+```bash
+{{PACKAGE_MANAGER}} run deploy:web
+```
+
+### API (Cloudflare Workers)
+
+```bash
+{{PACKAGE_MANAGER}} run deploy:api
+```
+
+## Troubleshooting
+
+### Port already in use
+
+If you see "Port 5173 is already in use", stop other Vite dev servers or change the port in `web/vite.config.ts`.
+
+### API not responding
+
+Make sure you've configured D1 and KV bindings in `api/wrangler.toml`.
+
+### Git hooks not running
+
+Reinstall Husky:
+
+```bash
+{{PACKAGE_MANAGER}} run prepare
+```
+
+## Learn More
+
+- [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/)
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [SvelteKit Documentation](https://kit.svelte.dev/)
+- [Hono Documentation](https://hono.dev/)
+
+## License
+
+MIT

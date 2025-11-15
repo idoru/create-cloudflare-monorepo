@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+/**
+ * Interactive setup script for Cloudflare bindings
+ * Usage: node scripts/setup-cloudflare.js
+ */
+
+import pc from 'picocolors';
+
+console.log(pc.blue('🔧 Cloudflare Bindings Setup Guide\n'));
+
+console.log(pc.bold('This script will guide you through setting up D1 and KV bindings.\n'));
+
+console.log(pc.cyan('Step 1: Create D1 Database'));
+console.log(pc.dim('Run the following command in the api/ directory:'));
+console.log(pc.yellow('  cd api'));
+console.log(pc.yellow('  npx wrangler d1 create {{PROJECT_NAME}}-db'));
+console.log(pc.dim('Copy the database_id from the output.\n'));
+
+console.log(pc.cyan('Step 2: Create KV Namespace'));
+console.log(pc.dim('Run the following command in the api/ directory:'));
+console.log(pc.yellow('  npx wrangler kv:namespace create {{PROJECT_NAME}}-kv'));
+console.log(pc.dim('Copy the id from the output.\n'));
+
+console.log(pc.cyan('Step 3: Update wrangler.toml'));
+console.log(pc.dim('Edit api/wrangler.toml and replace the placeholder IDs:'));
+console.log(pc.dim('  - Replace the database_id with your D1 database ID'));
+console.log(pc.dim('  - Replace the KV id with your KV namespace ID\n'));
+
+console.log(pc.cyan('Step 4: Run migrations (if any)'));
+console.log(pc.dim('If you have D1 migrations:'));
+console.log(pc.yellow('  cd api'));
+console.log(pc.yellow('  npx wrangler d1 execute {{PROJECT_NAME}}-db --local --file=./migrations/0001_init.sql\n'));
+
+console.log(pc.green('✅ Once complete, you can start development with:'));
+console.log(pc.yellow('  npm run dev\n'));
+
+console.log(pc.dim('For more information, see:'));
+console.log(pc.dim('  D1: https://developers.cloudflare.com/d1/'));
+console.log(pc.dim('  KV: https://developers.cloudflare.com/kv/'));

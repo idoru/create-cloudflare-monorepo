@@ -1,0 +1,20 @@
+// Script to generate OpenAPI specification
+// Run with: npm run apidocs
+
+async function generateOpenAPI() {
+  try {
+    const response = await fetch('http://localhost:8787/api/openapi.json');
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const spec = await response.json();
+    console.log(JSON.stringify(spec, null, 2));
+  } catch (error) {
+    console.error('Error generating OpenAPI spec:');
+    console.error('Make sure the API server is running (npm run dev)');
+    console.error(error.message);
+    process.exit(1);
+  }
+}
+
+generateOpenAPI();

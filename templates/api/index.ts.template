@@ -1,0 +1,114 @@
+import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
+import type { KVNamespace, D1Database } from '@cloudflare/workers-types';
+
+type Bindings = {
+  D1: D1Database;
+  KV: KVNamespace;
+};
+
+const app = new OpenAPIHono<{ Bindings: Bindings }>();
+
+// GET /api/echo endpoint
+const getEchoRoute = createRoute({
+  method: 'get',
+  path: '/api/echo',
+  responses: {
+    200: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            hello: z.string(),
+          }),
+        },
+      },
+      description: 'Returns a hello world message',
+    },
+  },
+  tags: ['Echo'],
+  summary: 'Get echo message',
+  description: 'Returns a simple hello world JSON response',
+});
+
+app.openapi(getEchoRoute, (c) => {
+  return c.json({ hello: 'world' });
+});
+
+// POST /api/echo endpoint
+const postEchoRoute = createRoute({
+  method: 'post',
+  path: '/api/echo',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            message: z.string().min(1, 'Message is required'),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            echo: z.object({
+              message: z.string(),
+            }),
+          }),
+        },
+      },
+      description: 'Returns the echoed message',
+    },
+    400: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            error: z.string(),
+          }),
+        },
+      },
+      description: 'Bad request - invalid input',
+    },
+  },
+  tags: ['Echo'],
+  summary: 'Post echo message',
+  description: 'Accepts a message and returns it back wrapped in an echo object',
+});
+
+app.openapi(postEchoRoute, async (c) => {
+  const data = await c.req.json();
+  return c.json({ echo: data });
+});
+
+// OpenAPI documentation endpoint
+app.doc('/api/openapi.json', {
+  openapi: '3.1.0',
+  info: {
+    title: '{{PROJECT_NAME}} API',
+    version: '1.0.0',
+    description: 'API for {{PROJECT_NAME}} deployed on Cloudflare Workers',
+  },
+  tags: [
+    {
+      name: 'Echo',
+      description: 'Echo endpoints for testing',
+    },
+  ],
+});
+
+// Example: Using D1 Database
+// app.get('/api/users', async (c) => {
+//   const result = await c.env.D1.prepare('SELECT * FROM users LIMIT 10').all();
+//   return c.json(result);
+// });
+
+// Example: Using KV Store
+// app.get('/api/cache/:key', async (c) => {
+//   const key = c.req.param('key');
+//   const value = await c.env.KV.get(key);
+//   return c.json({ key, value });
+// });
+
+export default app;

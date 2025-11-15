@@ -1,0 +1,69 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('API Echo Endpoints', () => {
+  test('should load the home page', async ({ page }) => {
+    await page.goto('/');
+
+    // Check that the page title is correct
+    await expect(page).toHaveTitle('{{PROJECT_NAME}}');
+
+    // Check that the main heading is visible
+    await expect(page.locator('h1')).toContainText('{{PROJECT_NAME}}');
+  });
+
+  test('should test GET /api/echo endpoint', async ({ page }) => {
+    await page.goto('/');
+
+    // Click the "Send GET Request" button
+    await page.locator('button', { hasText: 'Send GET Request' }).click();
+
+    // Wait for the response card to appear
+    await expect(page.locator('text=Response')).toBeVisible({ timeout: 5000 });
+
+    // Check that the response contains the expected data
+    const responseText = await page.locator('pre code').textContent();
+    expect(responseText).toContain('"hello": "world"');
+  });
+
+  test('should test POST /api/echo endpoint', async ({ page }) => {
+    await page.goto('/');
+
+    const testMessage = 'Hello from E2E test!';
+
+    // Find the input field and enter a message
+    const input = page.locator('input#message');
+    await input.fill(testMessage);
+
+    // Click the "Send POST Request" button
+    await page.locator('button', { hasText: 'Send POST Request' }).click();
+
+    // Wait for the response card to appear
+    await expect(page.locator('text=Response')).toBeVisible({ timeout: 5000 });
+
+    // Check that the response contains the echoed message
+    const responseText = await page.locator('pre code').textContent();
+    expect(responseText).toContain('"echo"');
+    expect(responseText).toContain(testMessage);
+  });
+
+  test('should show error for empty POST message', async ({ page }) => {
+    await page.goto('/');
+
+    // Don't fill in the input, just click the button
+    await page.locator('button', { hasText: 'Send POST Request' }).click();
+
+    // Should show an error message
+    await expect(page.locator('text=Error')).toBeVisible({ timeout: 2000 });
+  });
+
+  test('should display tech stack information', async ({ page }) => {
+    await page.goto('/');
+
+    // Check that tech stack card is visible
+    await expect(page.locator('text=Tech Stack')).toBeVisible();
+    await expect(page.locator('text=SvelteKit')).toBeVisible();
+    await expect(page.locator('text=Hono')).toBeVisible();
+    await expect(page.locator('text=TailwindCSS')).toBeVisible();
+    await expect(page.locator('text=@hono/zod-openapi')).toBeVisible();
+  });
+});

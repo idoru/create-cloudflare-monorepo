@@ -1,0 +1,112 @@
+# Web App
+
+SvelteKit frontend application deployed to Cloudflare Pages.
+
+## Tech Stack
+
+- **SvelteKit** - Full-stack framework with server-side rendering
+- **TailwindCSS** - Utility-first CSS framework
+- **Shadcn-svelte** - Beautiful UI component library
+- **@sveltejs/adapter-cloudflare** - Cloudflare Pages adapter
+
+## Development
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The app will be available at http://localhost:5173
+
+## API Proxy
+
+During development, requests to `/api/*` are proxied to the API server running on port 8787. This is configured in `vite.config.ts`.
+
+## Building
+
+Build the application for production:
+
+```bash
+npm run build
+```
+
+The output will be in `.svelte-kit/cloudflare/` directory.
+
+## Preview
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Deployment
+
+### Via Git Integration (Recommended)
+
+1. Push your repository to GitHub/GitLab/Bitbucket
+2. Go to Cloudflare Dashboard > Pages
+3. Create a new project and connect your repository
+4. Configure build settings:
+   - Build command: `npm run build --workspace web`
+   - Build output directory: `web/.svelte-kit/cloudflare`
+5. Deploy!
+
+### Manual Deployment
+
+Deploy using Wrangler:
+
+```bash
+npm run deploy
+```
+
+## Adding Pages
+
+Create a new page by adding a `+page.svelte` file in `src/routes/`:
+
+```
+src/routes/
+├── +page.svelte          # Home page (/)
+├── about/
+│   └── +page.svelte      # About page (/about)
+└── blog/
+    ├── +page.svelte      # Blog index (/blog)
+    └── [slug]/
+        └── +page.svelte  # Blog post (/blog/[slug])
+```
+
+## Adding Components
+
+Shadcn components can be added using:
+
+```bash
+npx shadcn-svelte@latest add [component-name]
+```
+
+Available components: https://www.shadcn-svelte.com/docs/components
+
+## Using Cloudflare Bindings
+
+Access D1 and KV in server endpoints (`+server.ts`):
+
+```typescript
+import type { RequestHandler } from './$types';
+
+export const GET: RequestHandler = async ({ platform }) => {
+  // Access KV
+  const value = await platform?.env.KV.get('key');
+
+  // Access D1
+  const result = await platform?.env.D1.prepare('SELECT * FROM users').all();
+
+  return new Response(JSON.stringify({ value, result }));
+};
+```
+
+## Learn More
+
+- [SvelteKit Documentation](https://kit.svelte.dev/)
+- [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/)
+- [Shadcn-svelte Documentation](https://www.shadcn-svelte.com/)
+- [TailwindCSS Documentation](https://tailwindcss.com/)

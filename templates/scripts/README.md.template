@@ -1,0 +1,47 @@
+# Scripts
+
+Utility scripts for deployment and setup.
+
+## Available Scripts
+
+### deploy-all.js
+
+Deploys both the web app and API to Cloudflare.
+
+```bash
+node scripts/deploy-all.js
+```
+
+This script will:
+1. Build the web app
+2. Deploy to Cloudflare Pages
+3. Deploy the API to Cloudflare Workers
+
+### setup-cloudflare.js
+
+Interactive guide for setting up Cloudflare bindings (D1 and KV).
+
+```bash
+node scripts/setup-cloudflare.js
+```
+
+## Adding Custom Scripts
+
+Create new scripts in this directory. For executable scripts, add a shebang:
+
+```javascript
+#!/usr/bin/env node
+
+// Your script code here
+```
+
+Then make it executable:
+
+```bash
+chmod +x scripts/your-script.js
+```
+
+## Learn More
+
+- [Wrangler CLI Documentation](https://developers.cloudflare.com/workers/wrangler/)
+- [Cloudflare Pages Deployment](https://developers.cloudflare.com/pages/platform/deploy-hooks/)

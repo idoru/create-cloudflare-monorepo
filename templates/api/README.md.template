@@ -1,0 +1,212 @@
+# API
+
+Hono-based API deployed to Cloudflare Workers with OpenAPI documentation.
+
+## Tech Stack
+
+- **Hono** - Fast, lightweight web framework for Cloudflare Workers
+- **@hono/zod-openapi** - OpenAPI 3.1 schema generation
+- **Zod** - TypeScript-first schema validation
+- **Vitest** - Unit testing with Cloudflare Workers support
+- **D1** - Cloudflare's serverless SQL database
+- **KV** - Cloudflare's edge key-value store
+
+## Setup
+
+### 1. Create D1 Database
+
+```bash
+npx wrangler d1 create {{PROJECT_NAME}}-db
+```
+
+Copy the `database_id` from the output and update it in `wrangler.toml`.
+
+### 2. Create KV Namespace
+
+```bash
+npx wrangler kv:namespace create {{PROJECT_NAME}}-kv
+```
+
+Copy the namespace `id` and update it in `wrangler.toml`.
+
+### 3. Update wrangler.toml
+
+Replace the placeholder IDs in `wrangler.toml` with your actual D1 and KV IDs from the steps above.
+
+## Development
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The API will be available at http://localhost:8787
+
+## Available Endpoints
+
+### GET /api/echo
+
+Returns a simple hello world message.
+
+**Response:**
+```json
+{
+  "hello": "world"
+}
+```
+
+### POST /api/echo
+
+Echoes back the provided message.
+
+**Request:**
+```json
+{
+  "message": "your message here"
+}
+```
+
+**Response:**
+```json
+{
+  "echo": {
+    "message": "your message here"
+  }
+}
+```
+
+### GET /api/openapi.json
+
+Returns the OpenAPI 3.1 specification for the API.
+
+## OpenAPI Documentation
+
+Generate the OpenAPI spec:
+
+```bash
+npm run apidocs
+```
+
+Or save it to a file:
+
+```bash
+npm run apidocs > openapi.json
+```
+
+You can then view the spec using tools like:
+- [Swagger Editor](https://editor.swagger.io/)
+- [Redoc](https://github.com/Redocly/redoc)
+- [Scalar](https://github.com/scalar/scalar)
+
+## Testing
+
+Run unit tests:
+
+```bash
+npm test
+```
+
+The tests use `@cloudflare/vitest-pool-workers` to simulate the Cloudflare Workers environment.
+
+## Using Cloudflare Bindings
+
+### D1 Database
+
+```typescript
+app.get('/api/users', async (c) => {
+  const result = await c.env.D1.prepare('SELECT * FROM users').all();
+  return c.json(result);
+});
+```
+
+### KV Store
+
+```typescript
+app.get('/api/cache/:key', async (c) => {
+  const key = c.req.param('key');
+  const value = await c.env.KV.get(key);
+  return c.json({ key, value });
+});
+
+app.post('/api/cache/:key', async (c) => {
+  const key = c.req.param('key');
+  const { value } = await c.req.json();
+  await c.env.KV.put(key, value);
+  return c.json({ success: true });
+});
+```
+
+## Adding New Routes
+
+1. Define your route schema with Zod:
+
+```typescript
+const myRoute = createRoute({
+  method: 'get',
+  path: '/api/myroute',
+  responses: {
+    200: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            data: z.string(),
+          }),
+        },
+      },
+      description: 'Successful response',
+    },
+  },
+  tags: ['MyTag'],
+});
+```
+
+2. Implement the route:
+
+```typescript
+app.openapi(myRoute, async (c) => {
+  return c.json({ data: 'Hello!' });
+});
+```
+
+3. The route will automatically appear in the OpenAPI documentation!
+
+## Deployment
+
+Deploy to Cloudflare Workers:
+
+```bash
+npm run deploy
+```
+
+Or use the root-level deploy command:
+
+```bash
+cd ..
+npm run deploy:api
+```
+
+## Environment Variables
+
+Set secrets using Wrangler:
+
+```bash
+npx wrangler secret put MY_SECRET
+```
+
+Access in your code:
+
+```typescript
+app.get('/api/secret', (c) => {
+  const secret = c.env.MY_SECRET;
+  return c.json({ secret });
+});
+```
+
+## Learn More
+
+- [Hono Documentation](https://hono.dev/)
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [D1 Documentation](https://developers.cloudflare.com/d1/)
+- [Workers KV Documentation](https://developers.cloudflare.com/kv/)
+- [@hono/zod-openapi Documentation](https://github.com/honojs/middleware/tree/main/packages/zod-openapi)

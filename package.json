@@ -1,0 +1,43 @@
+{
+  "name": "create-cloudflare-monorepo",
+  "version": "1.0.0",
+  "description": "Opinionated monorepo initializer for Cloudflare-deployed applications",
+  "type": "module",
+  "bin": {
+    "create-cloudflare-monorepo": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "cloudflare",
+    "monorepo",
+    "sveltekit",
+    "hono",
+    "initializer",
+    "create"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "prompts": "^2.4.2",
+    "picocolors": "^1.1.1",
+    "fs-extra": "^11.2.0",
+    "execa": "^9.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/prompts": "^2.4.9",
+    "@types/fs-extra": "^11.0.4",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

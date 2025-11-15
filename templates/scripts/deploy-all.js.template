@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+/**
+ * Deploy both web and API to Cloudflare
+ * Usage: node scripts/deploy-all.js
+ */
+
+import { execSync } from 'child_process';
+import pc from 'picocolors';
+
+function exec(command, cwd) {
+  console.log(pc.dim(`$ ${command}`));
+  try {
+    execSync(command, { stdio: 'inherit', cwd });
+  } catch (error) {
+    console.error(pc.red(`Failed to execute: ${command}`));
+    process.exit(1);
+  }
+}
+
+console.log(pc.blue('🚀 Deploying {{PROJECT_NAME}} to Cloudflare\n'));
+
+// Build and deploy web app
+console.log(pc.cyan('📦 Building web app...'));
+exec('npm run build', './web');
+
+console.log(pc.cyan('\n🌐 Deploying web app to Cloudflare Pages...'));
+exec('npm run deploy', './web');
+
+// Deploy API
+console.log(pc.cyan('\n⚡ Deploying API to Cloudflare Workers...'));
+exec('npm run deploy', './api');
+
+console.log(pc.green('\n✅ Deployment complete!'));
+console.log(pc.dim('Check your Cloudflare dashboard for deployment URLs.'));

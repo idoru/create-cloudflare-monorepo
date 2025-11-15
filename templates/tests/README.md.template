@@ -1,0 +1,172 @@
+# End-to-End Tests
+
+Playwright-based E2E tests for the full-stack application.
+
+## Tech Stack
+
+- **Playwright** - Modern end-to-end testing framework
+- **TypeScript** - Type-safe test authoring
+
+## Running Tests
+
+### Run all tests
+
+```bash
+npm test
+```
+
+### Run tests in UI mode (recommended for development)
+
+```bash
+npm run test:ui
+```
+
+### Run tests in debug mode
+
+```bash
+npm run test:debug
+```
+
+### Run specific test file
+
+```bash
+npx playwright test echo.spec.ts
+```
+
+### Run tests in headed mode (see the browser)
+
+```bash
+npx playwright test --headed
+```
+
+## Test Configuration
+
+The Playwright configuration (`playwright.config.ts`) is set up to:
+
+1. **Start both web and API servers automatically** before running tests
+2. **Run tests in parallel** across multiple browsers (Chromium, Firefox, WebKit)
+3. **Retry failed tests** in CI environments
+4. **Generate HTML reports** of test results
+
+### CI/CD Integration
+
+In CI environments (when `process.env.CI` is set):
+- Tests retry up to 2 times on failure
+- Tests run serially (workers: 1)
+- Servers are always freshly started
+
+## Writing Tests
+
+Create test files in the `e2e/` directory:
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('my test', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('h1')).toHaveText('Expected Text');
+});
+```
+
+### Useful Playwright Commands
+
+```typescript
+// Navigation
+await page.goto('/path');
+
+// Locators
+page.locator('button');
+page.locator('text=Click me');
+page.locator('#my-id');
+page.locator('.my-class');
+
+// Interactions
+await button.click();
+await input.fill('text');
+await input.clear();
+await checkbox.check();
+
+// Assertions
+await expect(element).toBeVisible();
+await expect(element).toHaveText('text');
+await expect(element).toContainText('partial');
+await expect(page).toHaveURL('/expected-url');
+await expect(page).toHaveTitle('Expected Title');
+
+// Waiting
+await page.waitForSelector('.my-class');
+await page.waitForURL('/new-url');
+await page.waitForTimeout(1000);
+```
+
+## Test Reports
+
+After running tests, view the HTML report:
+
+```bash
+npx playwright show-report
+```
+
+## Debugging
+
+### Using the Playwright Inspector
+
+```bash
+npm run test:debug
+```
+
+This opens the Playwright Inspector, allowing you to:
+- Step through test execution
+- Inspect the DOM
+- View console logs
+- Record new test steps
+
+### Using VS Code Extension
+
+Install the [Playwright Test for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) extension to:
+- Run tests directly from the editor
+- Debug tests with breakpoints
+- View test results inline
+
+## Best Practices
+
+1. **Use descriptive test names** that explain what is being tested
+2. **Keep tests independent** - each test should be able to run in isolation
+3. **Use page objects** for complex UIs to reduce duplication
+4. **Wait for elements properly** - use Playwright's auto-waiting features
+5. **Take screenshots on failure** - configured automatically in playwright.config.ts
+
+## Troubleshooting
+
+### Tests timing out
+
+Increase the timeout in `playwright.config.ts`:
+
+```typescript
+use: {
+  timeout: 30 * 1000, // 30 seconds
+}
+```
+
+### Servers not starting
+
+Check that ports 5173 and 8787 are not already in use:
+
+```bash
+lsof -i :5173
+lsof -i :8787
+```
+
+### Browser download issues
+
+Install browsers manually:
+
+```bash
+npx playwright install
+```
+
+## Learn More
+
+- [Playwright Documentation](https://playwright.dev/)
+- [Best Practices](https://playwright.dev/docs/best-practices)
+- [API Reference](https://playwright.dev/docs/api/class-playwright)
