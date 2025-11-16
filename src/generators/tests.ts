@@ -49,12 +49,75 @@ export async function generateTestsWorkspace(config: ProjectConfig): Promise<voi
   console.log(pc.dim('  Installing Playwright...'));
   await exec(packageManager, ['install'], { cwd: testsDir, silent: true });
 
-  // Create playwright.config.ts
-  const playwrightConfigContent = await readTemplate('tests/playwright.config.ts.template');
-  await writeFile(
-    path.join(testsDir, 'playwright.config.ts'),
-    replaceVariables(playwrightConfigContent, variables)
-  );
+  // Create playwright.config.ts with package-manager-aware commands
+  const getWorkspaceCommand = (workspace: string, script: string) => {
+    switch (packageManager) {
+      case 'pnpm':
+        return `pnpm --filter ${workspace} run ${script}`;
+      case 'yarn':
+        return `yarn workspace ${workspace} run ${script}`;
+      case 'npm':
+      default:
+        return `npm --workspace ${workspace} run ${script}`;
+    }
+  };
+
+  const playwrightConfig = `import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+
+  use: {
+    baseURL: 'http://localhost:5173',
+    trace: 'on-first-retry',
+  },
+
+  // Web server only - API is accessed via Vite proxy at /api/*
+  // In development: run both \`pnpm run dev\` (starts web + api)
+  // In CI: webServer starts both servers below
+  webServer: process.env.CI ? [
+    {
+      command: '${getWorkspaceCommand('web', 'dev')}',
+      url: 'http://localhost:5173',
+      reuseExistingServer: false,
+      timeout: 120 * 1000,
+    },
+    {
+      command: '${getWorkspaceCommand('api', 'dev')}',
+      url: 'http://localhost:8787/api/echo',
+      reuseExistingServer: false,
+      timeout: 120 * 1000,
+    },
+  ] : {
+    command: '${getWorkspaceCommand('web', 'dev')}',
+    url: 'http://localhost:5173',
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
+  },
+
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+  ],
+});
+`;
+
+  await writeFile(path.join(testsDir, 'playwright.config.ts'), playwrightConfig);
 
   // Create E2E test
   const testContent = await readTemplate('tests/echo.spec.ts.template');
