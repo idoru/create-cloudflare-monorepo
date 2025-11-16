@@ -49,6 +49,21 @@ export async function getProjectConfig(projectNameArg?: string): Promise<Project
     initial: 0,
   });
 
+  // Shadcn base color
+  questions.push({
+    type: 'select',
+    name: 'shadcnBaseColor',
+    message: 'Select UI base color:',
+    choices: [
+      { title: 'Neutral', value: 'neutral' },
+      { title: 'Slate', value: 'slate' },
+      { title: 'Gray', value: 'gray' },
+      { title: 'Zinc', value: 'zinc' },
+      { title: 'Stone', value: 'stone' },
+    ],
+    initial: 0,
+  });
+
   const answers = await prompts(questions, {
     onCancel: () => {
       console.log(pc.red('\n✖ Cancelled'));
@@ -82,5 +97,6 @@ export async function getProjectConfig(projectNameArg?: string): Promise<Project
     targetDir,
     useTypeScript: answers.useTypeScript,
     packageManager: answers.packageManager,
+    shadcnBaseColor: answers.shadcnBaseColor,
   };
 }

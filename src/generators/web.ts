@@ -1,5 +1,6 @@
 import path from 'path';
 import pc from 'picocolors';
+import fs from 'fs-extra';
 import type { ProjectConfig, TemplateVariables } from '../types.js';
 import { exec, execCommand } from '../utils/exec.js';
 import { ensureDir, writeFile, readTemplate, replaceVariables } from '../utils/files.js';
@@ -7,7 +8,7 @@ import { ensureDir, writeFile, readTemplate, replaceVariables } from '../utils/f
 export async function generateWebApp(config: ProjectConfig): Promise<void> {
   console.log(pc.cyan('\n🌐 Creating web app (SvelteKit)...'));
 
-  const { targetDir, projectName, useTypeScript, packageManager } = config;
+  const { targetDir, projectName, useTypeScript, packageManager, shadcnBaseColor } = config;
   const webDir = path.join(targetDir, 'web');
 
   const variables: TemplateVariables = {
@@ -19,64 +20,50 @@ export async function generateWebApp(config: ProjectConfig): Promise<void> {
     USE_YARN: packageManager === 'yarn',
   };
 
-  // Create SvelteKit app using create-svelte
-  console.log(pc.dim('  Running create-svelte...'));
-  const createCommand = packageManager === 'npm' ? 'npm create' : `${packageManager} create`;
+  // Create SvelteKit app using sv create
+  console.log(pc.dim('  Running sv create...'));
   await execCommand(
-    `${createCommand} svelte@latest web -- --template skeleton ${useTypeScript ? '--types ts' : '--types checkjs'} --no-eslint --no-prettier --no-playwright --no-vitest`,
-    { cwd: targetDir, silent: true }
+    `npx sv create web --template minimal --install ${packageManager} ${useTypeScript ? '--types ts' : '--types jsdoc'} --no-add-ons`,
+    { cwd: targetDir, stdio: 'inherit' }
   );
 
-  // Install Cloudflare adapter
-  console.log(pc.dim('  Installing Cloudflare adapter...'));
-  await exec(packageManager, ['add', '-D', '@sveltejs/adapter-cloudflare'], {
-    cwd: webDir,
-    silent: true,
-  });
+  // Add Cloudflare adapter and TailwindCSS with plugins using sv add
+  console.log(pc.dim('  Adding Cloudflare adapter and TailwindCSS...'));
+  await execCommand(
+    `npx sv add --install ${packageManager} sveltekit-adapter=adapter:cloudflare tailwindcss=plugins:typography,forms`,
+    { cwd: webDir, stdio: 'inherit' }
+  );
 
-  // Update svelte.config.js to use Cloudflare adapter
-  const svelteConfig = `import adapter from '@sveltejs/adapter-cloudflare';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
-  preprocess: vitePreprocess(),
-  kit: {
-    adapter: adapter({
-      routes: {
-        include: ['/*'],
-        exclude: ['<all>'],
-      },
-    }),
-  },
-};
-
-export default config;
-`;
-
-  await writeFile(path.join(webDir, 'svelte.config.js'), svelteConfig);
-
-  // Add TailwindCSS
-  console.log(pc.dim('  Adding TailwindCSS...'));
-  await execCommand(`npx sv add tailwindcss --no-precss --typography false`, {
-    cwd: webDir,
-    stdio: 'inherit',
-  });
-
-  // Initialize shadcn-svelte
+  // Initialize shadcn-svelte with flags to avoid interactive prompts
   console.log(pc.dim('  Initializing shadcn-svelte...'));
-  await execCommand(`npx shadcn-svelte@latest init -y`, {
-    cwd: webDir,
-    stdio: 'inherit',
-  });
+  await execCommand(
+    `npx shadcn-svelte@latest init --base-color ${shadcnBaseColor} --css src/app.css --lib-alias $lib --components-alias $lib/components --ui-alias $lib/components/ui --utils-alias $lib/utils --hooks-alias $lib/hooks`,
+    {
+      cwd: webDir,
+      stdio: 'inherit',
+    }
+  );
 
-  // Add shadcn components
+  // Add shadcn components (must be added individually with -y flag)
   console.log(pc.dim('  Adding UI components...'));
-  await execCommand(`npx shadcn-svelte@latest add -y button card input label`, {
+  await execCommand(`npx shadcn-svelte@latest add button -y`, {
+    cwd: webDir,
+    stdio: 'inherit',
+  });
+  await execCommand(`npx shadcn-svelte@latest add card -y`, {
+    cwd: webDir,
+    stdio: 'inherit',
+  });
+  await execCommand(`npx shadcn-svelte@latest add input -y`, {
+    cwd: webDir,
+    stdio: 'inherit',
+  });
+  await execCommand(`npx shadcn-svelte@latest add label -y`, {
     cwd: webDir,
     stdio: 'inherit',
   });
 
+  // Now customize files after all tooling setup is complete
   // Create vite.config.ts with API proxy
   const viteConfigContent = await readTemplate('web/vite.config.ts.template');
   await writeFile(
@@ -114,7 +101,6 @@ export default config;
 
   // Add deploy script to package.json
   const packageJsonPath = path.join(webDir, 'package.json');
-  const fs = await import('fs-extra');
   const packageJson = await fs.readJson(packageJsonPath);
   packageJson.scripts.deploy = 'wrangler pages deploy .svelte-kit/cloudflare';
   await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });

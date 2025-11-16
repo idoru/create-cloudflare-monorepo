@@ -1,5 +1,6 @@
 import path from 'path';
 import pc from 'picocolors';
+import fs from 'fs-extra';
 import type { ProjectConfig, TemplateVariables } from '../types.js';
 import { exec, execCommand } from '../utils/exec.js';
 import { ensureDir, writeFile, readTemplate, replaceVariables } from '../utils/files.js';
@@ -23,8 +24,8 @@ export async function generateApiApp(config: ProjectConfig): Promise<void> {
   console.log(pc.dim('  Running create-hono...'));
   const createCommand = packageManager === 'npm' ? 'npm create' : `${packageManager} create`;
   await execCommand(
-    `${createCommand} hono@latest api -- --template cloudflare-workers --pm ${packageManager} --install`,
-    { cwd: targetDir, silent: true }
+    `${createCommand} hono@latest --template cloudflare-workers --pm ${packageManager} --install api`,
+    { cwd: targetDir, stdio: 'inherit' }
   );
 
   // Install additional dependencies
@@ -98,7 +99,6 @@ export async function generateApiApp(config: ProjectConfig): Promise<void> {
 
   // Update package.json scripts
   const packageJsonPath = path.join(apiDir, 'package.json');
-  const fs = await import('fs-extra');
   const packageJson = await fs.readJson(packageJsonPath);
   packageJson.scripts = {
     dev: 'wrangler dev',

@@ -17,6 +17,31 @@ export async function generateRootWorkspace(config: ProjectConfig): Promise<void
     USE_YARN: packageManager === 'yarn',
   };
 
+  // Create workspace scripts based on package manager
+  const getWorkspaceScript = (workspace: string, script: string) => {
+    switch (packageManager) {
+      case 'pnpm':
+        return `pnpm --filter ${workspace} run ${script}`;
+      case 'yarn':
+        return `yarn workspace ${workspace} run ${script}`;
+      case 'npm':
+      default:
+        return `npm --workspace ${workspace} run ${script}`;
+    }
+  };
+
+  const getWorkspacesScript = (script: string) => {
+    switch (packageManager) {
+      case 'pnpm':
+        return `pnpm -r run ${script}`;
+      case 'yarn':
+        return `yarn workspaces run ${script}`;
+      case 'npm':
+      default:
+        return `npm run ${script} --workspaces --if-present`;
+    }
+  };
+
   // Create root package.json
   const packageJson = {
     name: projectName,
@@ -27,17 +52,17 @@ export async function generateRootWorkspace(config: ProjectConfig): Promise<void
       ? {}
       : { workspaces: ['web', 'api', 'scripts', 'tests'] }),
     scripts: {
-      dev: 'concurrently -n web,api "npm --workspace web run dev" "npm --workspace api run dev"',
-      build: 'npm run build --workspaces --if-present',
-      preview: 'npm --workspace web run preview',
-      test: 'npm --workspace tests run test',
-      'test:unit': 'npm --workspace api run test',
-      'test:ui': 'npm --workspace tests run test:ui',
+      dev: `concurrently -n web,api "${getWorkspaceScript('web', 'dev')}" "${getWorkspaceScript('api', 'dev')}"`,
+      build: getWorkspacesScript('build'),
+      preview: getWorkspaceScript('web', 'preview'),
+      test: getWorkspaceScript('tests', 'test'),
+      'test:unit': getWorkspaceScript('api', 'test'),
+      'test:ui': getWorkspaceScript('tests', 'test:ui'),
       lint: 'eslint .',
       format: 'prettier --write .',
-      apidocs: 'npm --workspace api run apidocs',
-      'deploy:web': 'npm --workspace web run deploy',
-      'deploy:api': 'npm --workspace api run deploy',
+      apidocs: getWorkspaceScript('api', 'apidocs'),
+      'deploy:web': getWorkspaceScript('web', 'deploy'),
+      'deploy:api': getWorkspaceScript('api', 'deploy'),
       prepare: 'husky',
     },
     devDependencies: {

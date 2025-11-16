@@ -3,6 +3,7 @@ export interface ProjectConfig {
   targetDir: string;
   useTypeScript: boolean;
   packageManager: 'npm' | 'pnpm' | 'yarn';
+  shadcnBaseColor: 'slate' | 'gray' | 'zinc' | 'neutral' | 'stone';
 }
 
 export interface TemplateVariables extends Record<string, string | boolean> {
