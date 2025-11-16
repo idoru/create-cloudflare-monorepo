@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
+  import { Button } from '$lib/components/ui/button/index.js';
+  import * as Card from '$lib/components/ui/card/index.js';
+  import { Input } from '$lib/components/ui/input/index.js';
+  import { Label } from '$lib/components/ui/label/index.js';
 
   let message = '';
   let response = '';
@@ -67,25 +67,25 @@
 
   <div class="grid gap-6 md:grid-cols-2">
     <!-- GET Echo Test -->
-    <Card>
-      <CardHeader>
-        <CardTitle>GET /api/echo</CardTitle>
-        <CardDescription>Test a simple GET request to the API</CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
-        <Button on:click={handleGetEcho} disabled={loading} class="w-full">
+    <Card.Card>
+      <Card.Header>
+        <Card.Title>GET /api/echo</Card.Title>
+        <Card.Description>Test a simple GET request to the API</Card.Description>
+      </Card.Header>
+      <Card.Content class="space-y-4">
+        <Button onclick={handleGetEcho} disabled={loading} class="w-full">
           {loading ? 'Loading...' : 'Send GET Request'}
         </Button>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Card>
 
     <!-- POST Echo Test -->
-    <Card>
-      <CardHeader>
-        <CardTitle>POST /api/echo</CardTitle>
-        <CardDescription>Send a message to the API and get it echoed back</CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
+    <Card.Card>
+      <Card.Header>
+        <Card.Title>POST /api/echo</Card.Title>
+        <Card.Description>Send a message to the API and get it echoed back</Card.Description>
+      </Card.Header>
+      <Card.Content class="space-y-4">
         <div class="space-y-2">
           <Label for="message">Message</Label>
           <Input
@@ -95,43 +95,43 @@
             disabled={loading}
           />
         </div>
-        <Button on:click={handlePostEcho} disabled={loading} class="w-full">
+        <Button onclick={handlePostEcho} disabled={loading} class="w-full">
           {loading ? 'Sending...' : 'Send POST Request'}
         </Button>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Card>
   </div>
 
   <!-- Response Display -->
   {#if error}
-    <Card class="mt-6 border-destructive">
-      <CardHeader>
-        <CardTitle class="text-destructive">Error</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card.Card class="mt-6 border-destructive">
+      <Card.Header>
+        <Card.Title class="text-destructive">Error</Card.Title>
+      </Card.Header>
+      <Card.Content>
         <p class="text-destructive">{error}</p>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Card>
   {/if}
 
   {#if response}
-    <Card class="mt-6">
-      <CardHeader>
-        <CardTitle>Response</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card.Card class="mt-6">
+      <Card.Header>
+        <Card.Title>Response</Card.Title>
+      </Card.Header>
+      <Card.Content>
         <pre class="bg-muted p-4 rounded-md overflow-x-auto"><code>{response}</code></pre>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Card>
   {/if}
 
   <!-- Tech Stack Info -->
-  <Card class="mt-6">
-    <CardHeader>
-      <CardTitle>Tech Stack</CardTitle>
-      <CardDescription>This application is built with</CardDescription>
-    </CardHeader>
-    <CardContent>
+  <Card.Card class="mt-6">
+    <Card.Header>
+      <Card.Title>Tech Stack</Card.Title>
+      <Card.Description>This application is built with</Card.Description>
+    </Card.Header>
+    <Card.Content>
       <div class="grid gap-4 md:grid-cols-2">
         <div>
           <h3 class="font-semibold mb-2">Frontend</h3>
@@ -152,6 +152,6 @@
           </ul>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Card>
 </div>
