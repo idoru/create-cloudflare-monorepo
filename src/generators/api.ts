@@ -48,7 +48,7 @@ export async function generateApiApp(config: ProjectConfig): Promise<void> {
       '-D',
       '@cloudflare/workers-types',
       '@cloudflare/vitest-pool-workers',
-      'vitest',
+      'vitest@~3.2.0',
       'wrangler',
     ],
     { cwd: apiDir, silent: true }
