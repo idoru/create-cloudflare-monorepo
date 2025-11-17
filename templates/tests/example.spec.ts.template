@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('API Echo Endpoints', () => {
+test.describe('Example test page', () => {
   test('should load the home page', async ({ page }) => {
     await page.goto('/');
 
@@ -11,7 +11,7 @@ test.describe('API Echo Endpoints', () => {
     await expect(page.locator('h1')).toContainText('{{PROJECT_NAME}}');
   });
 
-  test('should test GET /api/echo endpoint', async ({ page }) => {
+  test('GET endpoint example test', async ({ page }) => {
     await page.goto('/');
 
     // Wait for hydration - button becomes enabled
@@ -29,7 +29,7 @@ test.describe('API Echo Endpoints', () => {
     expect(responseText).toContain('"hello": "world"');
   });
 
-  test('should test POST /api/echo endpoint', async ({ page }) => {
+  test('POST endpoint example test', async ({ page }) => {
     await page.goto('/');
 
     const testMessage = 'Hello from E2E test!';
@@ -55,7 +55,7 @@ test.describe('API Echo Endpoints', () => {
     expect(responseText).toContain(testMessage);
   });
 
-  test('should show error for empty POST message', async ({ page }) => {
+  test('should show validation error for empty input', async ({ page }) => {
     await page.goto('/');
 
     // Wait for hydration

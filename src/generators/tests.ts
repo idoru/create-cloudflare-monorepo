@@ -115,9 +115,9 @@ export default defineConfig({
   await writeFile(path.join(testsDir, 'playwright.config.ts'), playwrightConfig);
 
   // Create E2E test
-  const testContent = await readTemplate('tests/echo.spec.ts.template');
+  const testContent = await readTemplate('tests/example.spec.ts.template');
   await writeFile(
-    path.join(testsDir, 'e2e', 'echo.spec.ts'),
+    path.join(testsDir, 'e2e', 'example.spec.ts'),
     replaceVariables(testContent, variables)
   );
 
@@ -130,7 +130,7 @@ export default defineConfig({
 
   // Install Playwright browsers
   console.log(pc.dim('  Installing Playwright browsers...'));
-  await execCommand('npx playwright install --with-deps chromium', {
+  await execCommand('npx playwright install --with-deps chromium firefox webkit', {
     cwd: testsDir,
     stdio: 'inherit',
   });
