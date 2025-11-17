@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button/index.js';
   import * as Card from '$lib/components/ui/card/index.js';
   import { Input } from '$lib/components/ui/input/index.js';
@@ -8,6 +9,11 @@
   let response = '';
   let loading = false;
   let error = '';
+  let hydrated = false;
+
+  onMount(() => {
+    hydrated = true;
+  });
 
   async function handleGetEcho() {
     loading = true;
@@ -73,7 +79,7 @@
         <Card.Description>Test a simple GET request to the API</Card.Description>
       </Card.Header>
       <Card.Content class="space-y-4">
-        <Button onclick={handleGetEcho} disabled={loading} class="w-full">
+        <Button onclick={handleGetEcho} disabled={!hydrated || loading} class="w-full">
           {loading ? 'Loading...' : 'Send GET Request'}
         </Button>
       </Card.Content>
@@ -92,10 +98,10 @@
             id="message"
             bind:value={message}
             placeholder="Enter a message..."
-            disabled={loading}
+            disabled={!hydrated || loading}
           />
         </div>
-        <Button onclick={handlePostEcho} disabled={loading} class="w-full">
+        <Button onclick={handlePostEcho} disabled={!hydrated || loading} class="w-full">
           {loading ? 'Sending...' : 'Send POST Request'}
         </Button>
       </Card.Content>
@@ -136,19 +142,19 @@
         <div>
           <h3 class="font-semibold mb-2">Frontend</h3>
           <ul class="text-sm text-muted-foreground space-y-1">
-            <li>• SvelteKit</li>
-            <li>• TailwindCSS</li>
-            <li>• Shadcn-svelte</li>
-            <li>• Cloudflare Pages</li>
+            <li>SvelteKit</li>
+            <li>TailwindCSS</li>
+            <li>Shadcn-svelte</li>
+            <li>Cloudflare Pages</li>
           </ul>
         </div>
         <div>
           <h3 class="font-semibold mb-2">Backend</h3>
           <ul class="text-sm text-muted-foreground space-y-1">
-            <li>• Hono</li>
-            <li>• @hono/zod-openapi</li>
-            <li>• Cloudflare Workers</li>
-            <li>• D1 & KV bindings</li>
+            <li>Hono</li>
+            <li>@hono/zod-openapi</li>
+            <li>Cloudflare Workers</li>
+            <li>D1 & KV bindings</li>
           </ul>
         </div>
       </div>
