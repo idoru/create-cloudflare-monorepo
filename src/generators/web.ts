@@ -37,7 +37,7 @@ export async function generateWebApp(config: ProjectConfig): Promise<void> {
   // Initialize shadcn-svelte with flags to avoid interactive prompts
   console.log(pc.dim('  Initializing shadcn-svelte...'));
   await execCommand(
-    `npx shadcn-svelte@latest init --base-color ${shadcnBaseColor} --css src/app.css --lib-alias $lib --components-alias $lib/components --ui-alias $lib/components/ui --utils-alias $lib/utils --hooks-alias $lib/hooks`,
+    `npx shadcn-svelte@latest init --base-color ${shadcnBaseColor} --css src/routes/layout.css --lib-alias $lib --components-alias $lib/components --ui-alias $lib/components/ui --utils-alias $lib/utils --hooks-alias $lib/hooks`,
     {
       cwd: webDir,
       stdio: 'inherit',
