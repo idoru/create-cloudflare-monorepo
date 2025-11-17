@@ -25,8 +25,8 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       response = JSON.stringify(data, null, 2);
-    } catch (err: any) {
-      error = err.message || 'Failed to fetch';
+    } catch (err: unknown) {
+      error = err instanceof Error ? err.message : 'Failed to fetch';
     } finally {
       loading = false;
     }
@@ -51,8 +51,8 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       response = JSON.stringify(data, null, 2);
-    } catch (err: any) {
-      error = err.message || 'Failed to send message';
+    } catch (err: unknown) {
+      error = err instanceof Error ? err.message : 'Failed to send message';
     } finally {
       loading = false;
     }

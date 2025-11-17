@@ -24,6 +24,12 @@ export default ts.config(
     },
   },
   {
-    ignores: ['**/dist/**', '**/.svelte-kit/**', '**/.wrangler/**', '**/node_modules/**'],
+    ignores: [
+      '**/dist/**',
+      '**/.svelte-kit/**',
+      '**/.wrangler/**',
+      '**/node_modules/**',
+      '**/lib/components/ui/**', // Shadcn-svelte generated components
+    ],
   }
 );
