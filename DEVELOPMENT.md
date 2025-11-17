@@ -34,7 +34,7 @@ npm link
 
 ```bash
 cd /tmp
-create-cloudflare-monorepo test-project
+@idoru/create-cloudflare-monorepo test-project
 ```
 
 3. Follow the prompts:
@@ -79,7 +79,7 @@ npm test
 9. When done testing, unlink:
 
 ```bash
-npm unlink -g create-cloudflare-monorepo
+npm unlink -g @idoru/create-cloudflare-monorepo
 ```
 
 ### Option 2: Direct Execution
@@ -98,12 +98,12 @@ Create a tarball and install it:
 # In the create-cloudflare-monorepo directory
 npm pack
 
-# This creates create-cloudflare-monorepo-1.0.0.tgz
+# This creates idoru-create-cloudflare-monorepo-0.1.0.tgz
 # Install it globally
-npm install -g ./create-cloudflare-monorepo-1.0.0.tgz
+npm install -g ./idoru-create-cloudflare-monorepo-0.1.0.tgz
 
 # Now you can use it
-create-cloudflare-monorepo test-project
+@idoru/create-cloudflare-monorepo test-project
 ```
 
 ## Project Structure
@@ -228,7 +228,7 @@ npm publish
 5. Users can then use it:
 
 ```bash
-npm create cloudflare-monorepo@latest my-project
+npm create @idoru/cloudflare-monorepo@latest my-project
 ```
 
 ## CI/CD Recommendations
@@ -262,7 +262,7 @@ jobs:
       - run: npm link
       - run: |
           cd /tmp
-          create-cloudflare-monorepo test-project <<EOF
+          @idoru/create-cloudflare-monorepo test-project <<EOF
           test-project
           y
           pnpm

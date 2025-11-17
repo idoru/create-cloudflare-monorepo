@@ -1,4 +1,4 @@
-# create-cloudflare-monorepo
+# @idoru/create-cloudflare-monorepo
 
 An opinionated monorepo initializer for applications deployed to Cloudflare. Scaffolds a complete full-stack project with SvelteKit, Hono, and comprehensive tooling.
 
@@ -29,14 +29,14 @@ An opinionated monorepo initializer for applications deployed to Cloudflare. Sca
 ### Create a New Project
 
 ```bash
-npm create cloudflare-monorepo@latest my-project
+npm create @idoru/cloudflare-monorepo@latest my-project
 ```
 
 Or with other package managers:
 
 ```bash
-pnpm create cloudflare-monorepo@latest my-project
-yarn create cloudflare-monorepo my-project
+pnpm create @idoru/cloudflare-monorepo@latest my-project
+yarn create @idoru/cloudflare-monorepo my-project
 ```
 
 ### Interactive Setup
@@ -389,7 +389,7 @@ npm run build
 ```bash
 npm link
 cd /tmp
-create-cloudflare-monorepo test-project
+@idoru/create-cloudflare-monorepo test-project
 ```
 
 ### Project Structure

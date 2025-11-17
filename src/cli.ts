@@ -6,7 +6,7 @@ import { pathExists, isEmpty } from './utils/files.js';
 
 export async function getProjectConfig(projectNameArg?: string): Promise<ProjectConfig> {
   // Welcome message
-  console.log(pc.bold(pc.blue('\ncreate-cloudflare-monorepo\n')));
+  console.log(pc.bold(pc.blue('\n@idoru/create-cloudflare-monorepo\n')));
   console.log(pc.dim('An opinionated monorepo initializer for Cloudflare-deployed applications\n'));
 
   const questions: prompts.PromptObject[] = [];

@@ -1,10 +1,10 @@
 {
-  "name": "create-cloudflare-monorepo",
-  "version": "1.0.0",
+  "name": "@idoru/create-cloudflare-monorepo",
+  "version": "0.1.0",
   "description": "Opinionated monorepo initializer for Cloudflare-deployed applications",
   "type": "module",
   "bin": {
-    "create-cloudflare-monorepo": "./dist/index.js"
+    "@idoru/create-cloudflare-monorepo": "./dist/index.js"
   },
   "files": [
     "dist",
@@ -23,7 +23,7 @@
     "initializer",
     "create"
   ],
-  "author": "",
+  "author": "idoru",
   "license": "MIT",
   "dependencies": {
     "prompts": "^2.4.2",
