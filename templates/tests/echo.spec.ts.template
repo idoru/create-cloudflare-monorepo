@@ -14,8 +14,12 @@ test.describe('API Echo Endpoints', () => {
   test('should test GET /api/echo endpoint', async ({ page }) => {
     await page.goto('/');
 
+    // Wait for hydration - button becomes enabled
+    const getButton = page.locator('button', { hasText: 'Send GET Request' });
+    await expect(getButton).toBeEnabled();
+
     // Click the "Send GET Request" button
-    await page.locator('button', { hasText: 'Send GET Request' }).click();
+    await getButton.click();
 
     // Wait for the response card to appear
     await expect(page.locator('text=Response')).toBeVisible({ timeout: 5000 });
@@ -30,12 +34,17 @@ test.describe('API Echo Endpoints', () => {
 
     const testMessage = 'Hello from E2E test!';
 
-    // Find the input field and enter a message
+    // Wait for hydration - input becomes enabled
     const input = page.locator('input#message');
+    await expect(input).toBeEnabled();
+
+    // Find the input field and enter a message
     await input.fill(testMessage);
 
-    // Click the "Send POST Request" button
-    await page.locator('button', { hasText: 'Send POST Request' }).click();
+    // Wait for button to be enabled and click
+    const postButton = page.locator('button', { hasText: 'Send POST Request' });
+    await expect(postButton).toBeEnabled();
+    await postButton.click();
 
     // Wait for the response card to appear
     await expect(page.locator('text=Response')).toBeVisible({ timeout: 5000 });
@@ -49,8 +58,12 @@ test.describe('API Echo Endpoints', () => {
   test('should show error for empty POST message', async ({ page }) => {
     await page.goto('/');
 
+    // Wait for hydration
+    const postButton = page.locator('button', { hasText: 'Send POST Request' });
+    await expect(postButton).toBeEnabled();
+
     // Don't fill in the input, just click the button
-    await page.locator('button', { hasText: 'Send POST Request' }).click();
+    await postButton.click();
 
     // Should show an error message
     await expect(page.locator('text=Error')).toBeVisible({ timeout: 2000 });
@@ -59,11 +72,17 @@ test.describe('API Echo Endpoints', () => {
   test('should display tech stack information', async ({ page }) => {
     await page.goto('/');
 
-    // Check that tech stack card is visible
-    await expect(page.locator('text=Tech Stack')).toBeVisible();
-    await expect(page.locator('text=SvelteKit')).toBeVisible();
-    await expect(page.locator('text=Hono')).toBeVisible();
-    await expect(page.locator('text=TailwindCSS')).toBeVisible();
-    await expect(page.locator('text=@hono/zod-openapi')).toBeVisible();
+    // Check that tech stack section exists
+    const techStack = page.getByText('Tech Stack', { exact: true });
+    await expect(techStack).toBeVisible();
+
+    // Check frontend technologies
+    await expect(page.getByText('SvelteKit')).toBeVisible();
+    await expect(page.getByText('TailwindCSS')).toBeVisible();
+    await expect(page.getByText('Shadcn-svelte')).toBeVisible();
+
+    // Check backend technologies
+    await expect(page.getByText('@hono/zod-openapi')).toBeVisible();
+    await expect(page.getByText('Cloudflare Workers')).toBeVisible();
   });
 });
