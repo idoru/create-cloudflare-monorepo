@@ -19,7 +19,7 @@ Hono-based API deployed to Cloudflare Workers with OpenAPI documentation.
 npx wrangler d1 create {{PROJECT_NAME}}-db
 ```
 
-Copy the `database_id` from the output and update it in `wrangler.toml`.
+Copy the `database_id` from the output and update it in `wrangler.jsonc`.
 
 ### 2. Create KV Namespace
 
@@ -27,11 +27,11 @@ Copy the `database_id` from the output and update it in `wrangler.toml`.
 npx wrangler kv:namespace create {{PROJECT_NAME}}-kv
 ```
 
-Copy the namespace `id` and update it in `wrangler.toml`.
+Copy the namespace `id` and update it in `wrangler.jsonc`.
 
-### 3. Update wrangler.toml
+### 3. Update wrangler.jsonc
 
-Replace the placeholder IDs in `wrangler.toml` with your actual D1 and KV IDs from the steps above.
+Replace the placeholder IDs in `wrangler.jsonc` with your actual D1 and KV IDs from the steps above.
 
 ## Development
 

@@ -26,7 +26,7 @@ We've successfully built a comprehensive monorepo initializer for Cloudflare-dep
 ### Templates (templates/)
 - ✅ Root: .gitignore, .prettierrc, eslint.config.js, README.md, pnpm-workspace.yaml
 - ✅ Web: +page.svelte (demo), vite.config.ts, app.d.ts, README.md
-- ✅ API: index.ts, wrangler.toml, vitest.config.ts, tests, README.md
+- ✅ API: index.ts, wrangler.jsonc, vitest.config.ts, tests, README.md
 - ✅ Tests: echo.spec.ts, playwright.config.ts, README.md
 - ✅ Scripts: deploy-all.js, setup-cloudflare.js, README.md
 
@@ -129,7 +129,7 @@ my-project/
 │   ├── src/
 │   │   ├── index.ts              # OpenAPI routes
 │   │   └── index.test.ts         # Unit tests
-│   └── wrangler.toml             # D1 + KV bindings
+│   └── wrangler.jsonc            # D1 + KV bindings
 │
 ├── tests/                  # E2E tests
 │   └── e2e/echo.spec.ts          # Full-stack test
@@ -156,7 +156,7 @@ my-project/
 2. Verify the generated project works:
    ```bash
    cd test-project
-   # Update api/wrangler.toml with real D1/KV IDs
+   # Update api/wrangler.jsonc with real D1/KV IDs
    npm run dev
    # Visit http://localhost:5173
    npm test

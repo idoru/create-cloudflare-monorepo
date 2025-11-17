@@ -39,13 +39,16 @@ cd api
 npx wrangler d1 create {{PROJECT_NAME}}-db
 ```
 
-Copy the database ID from the output and update `api/wrangler.toml`:
+Copy the database ID from the output and update `api/wrangler.jsonc`:
 
-```toml
-[[d1_databases]]
-binding = "D1"
-database_name = "{{PROJECT_NAME}}-db"
-database_id = "YOUR_DATABASE_ID_HERE"
+```jsonc
+"d1_databases": [
+  {
+    "binding": "D1",
+    "database_name": "{{PROJECT_NAME}}-db",
+    "database_id": "YOUR_DATABASE_ID_HERE"
+  }
+]
 ```
 
 #### Create KV Namespace
@@ -55,12 +58,15 @@ cd api
 npx wrangler kv:namespace create {{PROJECT_NAME}}-kv
 ```
 
-Copy the namespace ID and update `api/wrangler.toml`:
+Copy the namespace ID and update `api/wrangler.jsonc`:
 
-```toml
-[[kv_namespaces]]
-binding = "KV"
-id = "YOUR_KV_NAMESPACE_ID_HERE"
+```jsonc
+"kv_namespaces": [
+  {
+    "binding": "KV",
+    "id": "YOUR_KV_NAMESPACE_ID_HERE"
+  }
+]
 ```
 
 ### 3. Start Development Servers
@@ -168,7 +174,7 @@ If you see "Port 5173 is already in use", stop other Vite dev servers or change 
 
 ### API not responding
 
-Make sure you've configured D1 and KV bindings in `api/wrangler.toml`.
+Make sure you've configured D1 and KV bindings in `api/wrangler.jsonc`.
 
 ### Git hooks not running
 

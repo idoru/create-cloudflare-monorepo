@@ -79,7 +79,7 @@ async function main() {
     console.log(pc.cyan('  2. ') + 'Set up Cloudflare bindings:');
     console.log(pc.dim('     • Create D1 database: ') + pc.yellow('cd api && npx wrangler d1 create <name>-db'));
     console.log(pc.dim('     • Create KV namespace: ') + pc.yellow('npx wrangler kv:namespace create <name>-kv'));
-    console.log(pc.dim('     • Update api/wrangler.toml with the IDs'));
+    console.log(pc.dim('     • Update api/wrangler.jsonc with the IDs'));
     console.log(pc.cyan('  3. ') + `${pmCommand.run('dev')}`);
 
     console.log(pc.bold('\nAvailable commands:\n'));

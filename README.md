@@ -65,7 +65,7 @@ my-project/
 │   ├── src/
 │   │   ├── index.ts          # OpenAPI routes
 │   │   └── index.test.ts     # Unit tests
-│   ├── wrangler.toml         # Cloudflare config (D1 + KV)
+│   ├── wrangler.jsonc        # Cloudflare config (D1 + KV)
 │   └── scripts/
 │       └── generate-openapi.js
 │
@@ -96,7 +96,7 @@ cd api
 npx wrangler d1 create my-project-db
 ```
 
-Copy the `database_id` and update `api/wrangler.toml`.
+Copy the `database_id` and update `api/wrangler.jsonc`.
 
 #### Create KV Namespace
 
@@ -104,7 +104,7 @@ Copy the `database_id` and update `api/wrangler.toml`.
 npx wrangler kv:namespace create my-project-kv
 ```
 
-Copy the namespace `id` and update `api/wrangler.toml`.
+Copy the namespace `id` and update `api/wrangler.jsonc`.
 
 ### 2. Start Development
 
@@ -333,7 +333,7 @@ npx wrangler secret put MY_SECRET
 
 Change ports in:
 - `web/vite.config.ts` - Web app port
-- `api/wrangler.toml` - API port (under `[dev]`)
+- `api/wrangler.jsonc` - API port (under `"dev"`)
 
 ### Git Hooks Not Running
 

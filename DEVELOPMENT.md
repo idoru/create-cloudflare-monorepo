@@ -49,13 +49,13 @@ cd test-project
 tree -L 2
 ```
 
-5. Set up Cloudflare bindings (placeholders are in wrangler.toml):
+5. Set up Cloudflare bindings (placeholders are in wrangler.jsonc):
 
 ```bash
 cd api
 npx wrangler d1 create test-project-db
 npx wrangler kv:namespace create test-project-kv
-# Update api/wrangler.toml with the IDs
+# Update api/wrangler.jsonc with the IDs
 ```
 
 6. Start development servers:

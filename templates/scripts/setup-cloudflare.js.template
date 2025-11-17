@@ -22,8 +22,8 @@ console.log(pc.dim('Run the following command in the api/ directory:'));
 console.log(pc.yellow('  npx wrangler kv:namespace create {{PROJECT_NAME}}-kv'));
 console.log(pc.dim('Copy the id from the output.\n'));
 
-console.log(pc.cyan('Step 3: Update wrangler.toml'));
-console.log(pc.dim('Edit api/wrangler.toml and replace the placeholder IDs:'));
+console.log(pc.cyan('Step 3: Update wrangler.jsonc'));
+console.log(pc.dim('Edit api/wrangler.jsonc and replace the placeholder IDs:'));
 console.log(pc.dim('  - Replace the database_id with your D1 database ID'));
 console.log(pc.dim('  - Replace the KV id with your KV namespace ID\n'));
 

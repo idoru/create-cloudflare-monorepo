@@ -61,10 +61,10 @@ export async function generateApiApp(config: ProjectConfig): Promise<void> {
     replaceVariables(indexContent, variables)
   );
 
-  // Create wrangler.toml
-  const wranglerContent = await readTemplate('api/wrangler.toml.template');
+  // Create wrangler.jsonc
+  const wranglerContent = await readTemplate('api/wrangler.jsonc.template');
   await writeFile(
-    path.join(apiDir, 'wrangler.toml'),
+    path.join(apiDir, 'wrangler.jsonc'),
     replaceVariables(wranglerContent, variables)
   );
 
