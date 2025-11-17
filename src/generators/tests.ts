@@ -80,25 +80,20 @@ export default defineConfig({
   // Web server only - API is accessed via Vite proxy at /api/*
   // In development: run both \`pnpm run dev\` (starts web + api)
   // In CI: webServer starts both servers below
-  webServer: process.env.CI ? [
+  webServer: [
     {
       command: '${getWorkspaceCommand('web', 'dev')}',
       url: 'http://localhost:5173',
-      reuseExistingServer: false,
+      reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
     },
     {
       command: '${getWorkspaceCommand('api', 'dev')}',
       url: 'http://localhost:8787/api/echo',
-      reuseExistingServer: false,
+      reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
     },
-  ] : {
-    command: '${getWorkspaceCommand('web', 'dev')}',
-    url: 'http://localhost:5173',
-    reuseExistingServer: true,
-    timeout: 120 * 1000,
-  },
+  ],
 
   projects: [
     {
