@@ -4,12 +4,16 @@ import fs from 'fs-extra';
 import type { ProjectConfig, TemplateVariables } from '../types.js';
 import { exec, execCommand } from '../utils/exec.js';
 import { ensureDir, writeFile, readTemplate, replaceVariables } from '../utils/files.js';
+import { ensureCloudflareResources } from '../utils/wrangler.js';
 
-export async function generateApiApp(config: ProjectConfig): Promise<void> {
+export async function generateApiApp(config: ProjectConfig): Promise<string[]> {
   console.log(pc.cyan('\n⚡ Creating API app (Hono)...'));
 
   const { targetDir, projectName, useTypeScript, packageManager } = config;
   const apiDir = path.join(targetDir, 'api');
+
+  // Create Cloudflare resources
+  const { kvId, d1Id, warnings } = await ensureCloudflareResources(projectName);
 
   const variables: TemplateVariables = {
     PROJECT_NAME: projectName,
@@ -18,6 +22,8 @@ export async function generateApiApp(config: ProjectConfig): Promise<void> {
     USE_PNPM: packageManager === 'pnpm',
     USE_NPM: packageManager === 'npm',
     USE_YARN: packageManager === 'yarn',
+    KV_ID: kvId,
+    D1_ID: d1Id,
   };
 
   // Create Hono app using create-hono
@@ -109,4 +115,6 @@ export async function generateApiApp(config: ProjectConfig): Promise<void> {
   await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });
 
   console.log(pc.green('  ✓ API app created'));
+
+  return warnings;
 }

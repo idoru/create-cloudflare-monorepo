@@ -27,7 +27,7 @@ async function main() {
     // Generate all workspaces
     await generateRootWorkspace(config);
     await generateWebApp(config);
-    await generateApiApp(config);
+    const warnings = await generateApiApp(config);
     await generateTestsWorkspace(config);
     await generateScriptsWorkspace(config);
 
@@ -73,14 +73,19 @@ async function main() {
     // Success message
     console.log(pc.bold(pc.green(`\n✅ Success! Created ${config.projectName} in ${elapsed}s\n`)));
 
+    // Display warnings if any
+    if (warnings.length > 0) {
+      console.log(pc.bold(pc.yellow('⚠️  Warnings:\n')));
+      warnings.forEach((warning) => {
+        console.log(pc.yellow(`  • ${warning}`));
+      });
+      console.log();
+    }
+
     // Next steps
     console.log(pc.bold('Next steps:\n'));
     console.log(pc.cyan('  1. ') + `cd ${config.projectName}`);
-    console.log(pc.cyan('  2. ') + 'Set up Cloudflare bindings:');
-    console.log(pc.dim('     • Create D1 database: ') + pc.yellow('cd api && npx wrangler d1 create <name>-db'));
-    console.log(pc.dim('     • Create KV namespace: ') + pc.yellow('npx wrangler kv:namespace create <name>-kv'));
-    console.log(pc.dim('     • Update api/wrangler.jsonc with the IDs'));
-    console.log(pc.cyan('  3. ') + `${pmCommand.run('dev')}`);
+    console.log(pc.cyan('  2. ') + `${pmCommand.run('dev')}`);
 
     console.log(pc.bold('\nAvailable commands:\n'));
     console.log(pc.dim('  Development:'));

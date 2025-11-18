@@ -92,9 +92,9 @@ export async function generateWebApp(config: ProjectConfig): Promise<void> {
     replaceVariables(readmeContent, variables)
   );
 
-  // Install @cloudflare/workers-types
-  console.log(pc.dim('  Installing Cloudflare types...'));
-  await exec(packageManager, ['add', '-D', '@cloudflare/workers-types'], {
+  // Install @cloudflare/workers-types and wrangler
+  console.log(pc.dim('  Installing Cloudflare types and wrangler...'));
+  await exec(packageManager, ['add', '-D', '@cloudflare/workers-types', 'wrangler'], {
     cwd: webDir,
     silent: true,
   });

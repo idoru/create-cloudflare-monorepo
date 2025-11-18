@@ -1,38 +1,32 @@
 #!/usr/bin/env node
 
 /**
- * Interactive setup script for Cloudflare bindings
+ * Cloudflare resources information and setup guide
  * Usage: node scripts/setup-cloudflare.js
  */
 
 import pc from 'picocolors';
 
-console.log(pc.blue('🔧 Cloudflare Bindings Setup Guide\n'));
+console.log(pc.blue('☁️  Cloudflare Resources Info\n'));
 
-console.log(pc.bold('This script will guide you through setting up D1 and KV bindings.\n'));
+console.log(pc.green('✅ Your Cloudflare resources have been created and configured:\n'));
 
-console.log(pc.cyan('Step 1: Create D1 Database'));
-console.log(pc.dim('Run the following command in the api/ directory:'));
-console.log(pc.yellow('  cd api'));
-console.log(pc.yellow('  npx wrangler d1 create {{PROJECT_NAME}}-db'));
-console.log(pc.dim('Copy the database_id from the output.\n'));
+console.log(pc.cyan('D1 Database:'));
+console.log(pc.dim('  Name: ') + pc.yellow('{{PROJECT_NAME}}-db'));
+console.log(pc.dim('  Configured in: ') + 'api/wrangler.jsonc\n');
 
-console.log(pc.cyan('Step 2: Create KV Namespace'));
-console.log(pc.dim('Run the following command in the api/ directory:'));
-console.log(pc.yellow('  npx wrangler kv:namespace create {{PROJECT_NAME}}-kv'));
-console.log(pc.dim('Copy the id from the output.\n'));
+console.log(pc.cyan('KV Namespace:'));
+console.log(pc.dim('  Name: ') + pc.yellow('{{PROJECT_NAME}}-kv'));
+console.log(pc.dim('  Configured in: ') + 'api/wrangler.jsonc\n');
 
-console.log(pc.cyan('Step 3: Update wrangler.jsonc'));
-console.log(pc.dim('Edit api/wrangler.jsonc and replace the placeholder IDs:'));
-console.log(pc.dim('  - Replace the database_id with your D1 database ID'));
-console.log(pc.dim('  - Replace the KV id with your KV namespace ID\n'));
+console.log(pc.bold('Additional Setup:\n'));
 
-console.log(pc.cyan('Step 4: Run migrations (if any)'));
-console.log(pc.dim('If you have D1 migrations:'));
+console.log(pc.cyan('Run D1 migrations (if any):'));
+console.log(pc.dim('If you have D1 migrations to run:'));
 console.log(pc.yellow('  cd api'));
 console.log(pc.yellow('  npx wrangler d1 execute {{PROJECT_NAME}}-db --local --file=./migrations/0001_init.sql\n'));
 
-console.log(pc.green('✅ Once complete, you can start development with:'));
+console.log(pc.green('Ready to start development:'));
 console.log(pc.yellow('  npm run dev\n'));
 
 console.log(pc.dim('For more information, see:'));
