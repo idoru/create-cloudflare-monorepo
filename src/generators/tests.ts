@@ -85,13 +85,13 @@ export default defineConfig({
       command: '${getWorkspaceCommand('web', 'dev')}',
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
+      timeout: 60 * 1000,
     },
     {
       command: '${getWorkspaceCommand('api', 'dev')}',
-      url: 'http://localhost:8787/api/echo',
+      url: 'http://localhost:8787/docs',
       reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
+      timeout: 60 * 1000,
     },
   ],
 
